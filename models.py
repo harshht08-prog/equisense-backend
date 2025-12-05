@@ -1,7 +1,9 @@
 import os
+from dotenv import load_dotenv  # <--- Add this
 from sqlmodel import SQLModel, Field, create_engine, Session, select
 from datetime import datetime
 
+load_dotenv()
 # 1. Define the Data Model
 class Announcement(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
@@ -30,7 +32,7 @@ if database_url and database_url.startswith("postgres://"):
 # Fallback: If no cloud DB found, use local file
 if not database_url:
     database_url = "sqlite:///equisense.db"
-    
+
 print(f"🔌 CONNECTING TO: {database_url}")
 # Create the engine
 engine = create_engine(database_url)

@@ -17,18 +17,25 @@ def get_latest_news():
         if response:
             new_count = 0
             for item in response:
-                # 1. Construct the PDF URL
-                # NSE stores files at this specific base URL
+                # --- BUG FIX START ---
+                raw_file = item.get('attchmntFile')
                 pdf_link = None
-                if item.get('attchmntFile'):
-                    pdf_link = f"https://nsearchives.nseindia.com/corporate/{item.get('attchmntFile')}"
+                
+                if raw_file:
+                    # Check if it already looks like a URL
+                    if raw_file.startswith("http"):
+                        pdf_link = raw_file
+                    else:
+                        # It's just a filename, so add the prefix
+                        pdf_link = f"https://nsearchives.nseindia.com/corporate/{raw_file}"
+                # --- BUG FIX END ---
 
                 news_data = {
                     "symbol": item.get('symbol'),
                     "desc": item.get('desc'),
                     "an_dt": item.get('an_dt'),
                     "attachment_text": item.get('attchmntText'),
-                    "pdf_url": pdf_link  # <--- Saving the link
+                    "pdf_url": pdf_link
                 }
                 
                 if save_announcement(news_data):

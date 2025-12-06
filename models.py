@@ -12,6 +12,11 @@ class Announcement(SQLModel, table=True):
     an_dt: str              # Date string
     attachment_text: str | None = None # PDF Link
     
+    # --- NEW FIELDS FOR PHASE 3 ---
+    pdf_url: str | None = None         # Link to the file
+    forensic_analysis: str | None = None # Deep analysis
+    # ------------------------------
+    
     # AI Fields
     ai_summary: str | None = None 
     is_red_flag: bool = False

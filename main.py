@@ -6,7 +6,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import Session, select
 from models import Announcement, engine, create_db_and_tables
-
+# Add this to your imports at the top
+from analyst import analyze_pdfs
 # Import your actual task functions
 from fetch_news import get_latest_news
 from ai_agent import summarize_news
@@ -17,15 +18,24 @@ def run_scheduler():
     print("⏳ Scheduler Thread Started")
     
     # Define the job
-    def job():
-        print("⏰ Running Scheduled Tasks...")
-        try:
-            get_latest_news()
-            summarize_news()
-            send_pending_alerts()
-            print("✅ Tasks Complete")
-        except Exception as e:
-            print(f"❌ Scheduler Error: {e}")
+def job():
+    print("⏰ Running Scheduled Tasks...")
+    try:
+        # 1. Get News
+        get_latest_news()
+
+        # 2. Basic Summaries (Fast)
+        summarize_news()
+
+        # 3. Deep Analysis (The New Phase 3 Step)
+        analyze_pdfs()  # <--- ADD THIS LINE
+
+        # 4. Send Alerts
+        send_pending_alerts()
+
+        print("✅ Tasks Complete")
+    except Exception as e:
+        print(f"❌ Scheduler Error: {e}")
 
     # Schedule it every 10 minutes
     schedule.every(10).minutes.do(job)
